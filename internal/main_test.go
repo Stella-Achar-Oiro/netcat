@@ -1,5 +1,5 @@
 // main_test.go
-package main
+package internal
 
 import (
 	"bufio"
@@ -63,7 +63,7 @@ func (c *TestClient) close() {
 	}
 }
 
-func setupTestServer(t *testing.T, port string) error {
+func setupTestServer(port string) error {
 	// Validate port number before attempting to start server
 	if portNum, err := strconv.Atoi(port); err != nil || portNum < 0 || portNum > 65535 {
 		return fmt.Errorf("invalid port number: %s", port)
@@ -74,7 +74,7 @@ func setupTestServer(t *testing.T, port string) error {
 
 	go func() {
 		s := NewServer()
-		defer s.logFile.Close()
+		defer s.Logfile.Close()
 
 		// Send ready signal before starting the server
 		readyChan <- true
@@ -120,7 +120,7 @@ func TestServerStartup(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt // Capture range variable
 		t.Run(tt.name, func(t *testing.T) {
-			err := setupTestServer(t, tt.port)
+			err := setupTestServer(tt.port)
 
 			if tt.wantErr {
 				if err == nil {
@@ -147,7 +147,7 @@ func TestServerStartup(t *testing.T) {
 }
 
 func TestClientConnection(t *testing.T) {
-	err := setupTestServer(t, "8991")
+	err := setupTestServer( "8991")
 	if err != nil {
 		t.Fatalf("Server setup failed: %v", err)
 	}
@@ -199,7 +199,7 @@ func TestClientConnection(t *testing.T) {
 }
 
 func TestMessageBroadcast(t *testing.T) {
-	err := setupTestServer(t, "8992")
+	err := setupTestServer("8992")
 	if err != nil {
 		t.Fatalf("Server setup failed: %v", err)
 	}
@@ -247,7 +247,7 @@ func TestMessageBroadcast(t *testing.T) {
 }
 
 func TestDisconnect(t *testing.T) {
-	err := setupTestServer(t, "8993")
+	err := setupTestServer("8993")
 	if err != nil {
 		t.Fatalf("Server setup failed: %v", err)
 	}

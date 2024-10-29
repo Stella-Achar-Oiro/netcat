@@ -1,5 +1,5 @@
 // ui.go
-package main
+package internal
 
 import (
     "fmt"
